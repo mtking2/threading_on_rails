@@ -8,8 +8,14 @@ class PcThread < Thread
 			id = SecureRandom.uuid
 			t = self.new do
 				while redis.get(CHANNEL_STATE_KEY) == 'running' do
-					ActionCable.server.broadcast CHANNEL, message: "#{self.name}:#{id}", data: { id: id, count: count_current_threads }
-					sleep 1
+					ActionCable.server.broadcast(CHANNEL, {
+						message: "#{self.name}:#{id}",
+						id: id,
+						type: self.name,
+						count: count_current_threads
+					})
+
+					sleep rand(0.2..2)
 				end
 			end
 			t.name = id

@@ -8,4 +8,15 @@ App.pc = App.cable.subscriptions.create "PcChannel",
 
   received: (data) ->
     # Called when there's incoming data on the websocket for this channel
-    console.log(data)
+    console.log(data, data.type)
+    switch data.type
+      when "Producer"
+        console.log("Producer")
+        document.querySelector("#things").insertAdjacentHTML( 'beforeend', "<span class='item'>[]</span>" )
+      when "Consumer"
+        console.log("Consumer")
+        item = document.querySelector(".item")
+        if item
+          item.remove()
+      else
+      	break
