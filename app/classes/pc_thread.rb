@@ -4,15 +4,24 @@ class PcThread < Thread
 	CHANNEL_STATE_KEY = 'pc_channel_state'
 
 	class << self
-		def spawn
+		def spawn(color: 'ffffff')
 			id = SecureRandom.uuid
+			display_name = "#{self.name}:#{id}"
+			# html = ApplicationController.renderer.render(partial: 'dashboard/item', locals: { color: "#F33" })
+
+			html = ApplicationController.renderer.render(
+				partial: 'pc/item',
+				locals: { color: color }
+			)
+
 			t = self.new do
 				while redis.get(CHANNEL_STATE_KEY) == 'running' do
 					ActionCable.server.broadcast(CHANNEL, {
-						message: "#{self.name}:#{id}",
+						message: display_name,
 						id: id,
 						type: self.name,
-						count: count_current_threads
+						count: count_current_threads,
+						html: html,
 					})
 
 					sleep rand(0.2..2)

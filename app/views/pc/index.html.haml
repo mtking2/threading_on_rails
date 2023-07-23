@@ -1,0 +1,34 @@
+
+
+-# .h1 pc
+.h5 Max Threads: #{ENV['RAILS_MAX_THREADS']}
+.h5 Current Threads: #{@num_current_threads}</p>
+
+
+
+.container.text-center.border.border-5.rounded.border-opacity-25
+	.row.header
+		.col-md-2.border-end.border-opacity-25
+			.h2 Producers
+		.col-md-8
+			.h2 Shared Resources
+		.col-md-2.border-start.border-opacity-25
+			.h2 Consumers
+	.row.container-body
+		.col-md-2.d-grid.justify-content-center.border-end.border-opacity-25
+			#producers
+			.align-self-end.mb-2= button_to "Add Producer", pc_add_producer_path, remote: true, class: "btn btn-lg btn-light"
+		.col-md-8
+			#resources.d-flex.flex-wrap
+		.col-md-2.d-grid.justify-content-center.border-start.border-opacity-25
+			#consumers
+			.align-self-end.mb-2= button_to "Add Consumer", pc_add_consumer_path, remote: true, class: "btn btn-lg btn-light"
+
+
+
+
+
+= button_to "start", pc_start_path, remote: true, class: "btn btn-lg btn-light"
+= button_to "stop", pc_stop_path, remote: true, class: "btn btn-lg btn-light"
+
+

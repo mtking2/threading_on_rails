@@ -7,8 +7,9 @@ Rails.application.routes.draw do
 
 	root to: 'dashboard#index'
 
-	post 'dashboard/add_producer', to: 'dashboard#add_producer'
-	post 'dashboard/add_consumer', to: 'dashboard#add_consumer'
-	post 'dashboard/start', to: 'dashboard#start'
-	post 'dashboard/stop', to: 'dashboard#stop'
+	get 'pc/', to: 'pc#index'
+	post 'pc/add_producer', to: 'pc#add_producer'
+	post 'pc/add_consumer', to: 'pc#add_consumer'
+	post 'pc/start', to: 'pc#start'
+	post 'pc/stop', to: 'pc#stop'
 end

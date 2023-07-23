@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>ProducerConsumer</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= action_cable_meta_tag %>
+	<head>
+		<title>ProducerConsumer</title>
+		<%= csrf_meta_tags %>
+		<%= csp_meta_tag %>
+		<%= action_cable_meta_tag %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+		<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+		<%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
-  <body>
-    <%= yield %>
-  </body>
+		<%= javascript_include_tag 'https://kit.fontawesome.com/7b8d51796d.js', crossorigin: 'anonymous' %>
+	</head>
+
+	<body>
+		<%= render 'shared/navbar' %>
+		<%= yield %>
+	</body>
 </html>

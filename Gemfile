@@ -37,8 +37,11 @@ gem 'jbuilder', '~> 2.5'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'haml'
-gem 'sidekiq', '>= 7.1.2'
+gem 'sidekiq', '< 6'
 gem 'redis'
+gem 'bootstrap', '~> 5.3.0.alpha3'
+gem 'jquery-rails'
+
 
 group :development, :test do
 	# Call 'byebug' anywhere in the code to stop execution and get a debugger console
