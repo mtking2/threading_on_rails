@@ -4,7 +4,7 @@ class PcThread < Thread
 	IDLE = 'idle'
 	RUNNING = 'running'
 
-	attr_accessor :id, :state, :color
+	attr_accessor :id, :state, :color, :destroy_resources
 
 	class << self
 		include PcHelper
@@ -45,7 +45,10 @@ class PcThread < Thread
 		end
 	end
 
-	
+	def kill
+		super
+		send_kill_message
+	end
 
 	private
 
@@ -63,11 +66,24 @@ class PcThread < Thread
 	def send_item_message(action)
 		ActionCable.server.broadcast(CHANNEL, {
 			action: "item_#{action}",
+			color: color,
 			count: current_thread_count,
 			html: item_html,
 			id: id,
 			message: display_name,
 			type: self.class.name,
+		})
+	end
+
+	def send_kill_message
+		sleep 0.1
+		ActionCable.server.broadcast(CHANNEL, {
+			action: "#{self.class.name.downcase}_destroyed",
+			count: current_thread_count,
+			id: id,
+			message: display_name,
+			type: self.class.name,
+			destroy_resources: destroy_resources,
 		})
 	end
 
@@ -78,7 +94,7 @@ class PcThread < Thread
 	def item_html
 		@item_html ||= ApplicationController.renderer.render(
 			partial: 'pc/item',
-			locals: { color: color }
+			locals: { id: id, color: color }
 		)
 	end
 

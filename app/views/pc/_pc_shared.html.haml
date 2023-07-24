@@ -4,6 +4,6 @@
 			.color-patch.rounded.me-1{style: "border: 3px solid ##{color}"}
 			= type
 			.align-self-end.ms-auto
-				= button_to "#", remote: true, class: "btn btn-sm btn-outline-danger" do
+				= button_to pc_kill_thread_path(id: id), remote: true, class: "btn btn-sm btn-outline-danger" do
 					%i.fa-solid.fa-trash-can
 		.card-subtitle.mb-2.text-body-secondary.truncate= id

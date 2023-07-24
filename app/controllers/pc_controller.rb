@@ -2,28 +2,42 @@ class PcController < ApplicationController
 	include PcHelper
 
 	def index
-		redis.set(PcThread::CHANNEL_STATE_KEY, 'paused')
+		redis.set(PcThread::CHANNEL_STATE_KEY, CHANNEL_STATE_PAUSED) if channel_state.blank?
 	end
 
 	def start
-		redis.set(PcThread::CHANNEL_STATE_KEY, 'running')
+		redis.set(PcThread::CHANNEL_STATE_KEY, CHANNEL_STATE_RUNNING)
+		ActionCable.server.broadcast(CHANNEL, { action: 'status_changed', state: CHANNEL_STATE_RUNNING})
 		head :ok
 	end
 
 	def pause
-		redis.set(PcThread::CHANNEL_STATE_KEY, 'paused')
+		redis.set(PcThread::CHANNEL_STATE_KEY, CHANNEL_STATE_PAUSED)
+		ActionCable.server.broadcast(CHANNEL, { action: 'status_changed', state: CHANNEL_STATE_PAUSED})
 		head :ok
 	end
 
 	def stop
-		redis.set(PcThread::CHANNEL_STATE_KEY, 'stopped')
+		producer_threads.each do |thread|
+			thread.destroy_resources = true
+			thread.kill
+		end
+		consumer_threads.each do |thread|
+			thread.destroy_resources = true
+			thread.kill
+		end
+		redis.set(PcThread::CHANNEL_STATE_KEY, CHANNEL_STATE_PAUSED)
+		ActionCable.server.broadcast(CHANNEL, { action: 'status_changed', state: CHANNEL_STATE_PAUSED, count: current_thread_count})
+		ActionCable.server.broadcast(CHANNEL, { action: 'destroy_resources' })
+		head :ok
+	end
+
+	def kill_thread
+		Thread.list.find { |t| t.respond_to?(:id) && t.id == params[:id] }&.kill
 		head :ok
 	end
 
 	def add_producer
-		# color = random_pastel_color_in_hex
-		# color = random_bright_color_in_hex
-
 		Producer.spawn
 		head :ok
 	end
