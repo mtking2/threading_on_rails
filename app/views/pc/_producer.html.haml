@@ -1,2 +1,18 @@
-%div{style: "color: #{color}"}
-	#{type}:#{id}
+-# %div{style: "color: ##{color}"}
+-# 	#{type}:#{id}
+
+-# .alert.alert-dismissible.fade.show{ role: 'alert', style: "background-color: ##{color}"}
+-# 	%strong= type
+-# 	%p.text-muted= id
+-# 	%button.btn-close{ type: 'button', 'data-bs-dismiss': 'alert', 'aria-label': 'Close' }
+
+-# .card{ "data-id": id}
+-# 	.card-body.d-grid.p-2
+-# 		%h5.card-title.d-flex.align-items-center
+-# 			.color-patch.rounded.me-1{style: "border: 3px solid ##{color}"}
+-# 			=type
+-# 			.align-self-end.ms-auto
+-# 				= button_to "#", remote: true, class: "btn btn-sm btn-outline-danger" do
+-# 					%i.fa-solid.fa-trash-can
+-# 		.card-subtitle.mb-2.text-body-secondary.truncate= id
+= render partial: "pc/pc_shared", locals: { id: id, type: type, color: color }

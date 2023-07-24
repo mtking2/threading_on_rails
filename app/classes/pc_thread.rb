@@ -1,47 +1,96 @@
 class PcThread < Thread
+	include PcHelper
+	
+	IDLE = 'idle'
+	RUNNING = 'running'
 
-	CHANNEL = 'pc_channel'
-	CHANNEL_STATE_KEY = 'pc_channel_state'
+	attr_accessor :id, :state, :color
 
 	class << self
-		def spawn(color: 'ffffff')
+		include PcHelper
+
+		def spawn
 			id = SecureRandom.uuid
-			display_name = "#{self.name}:#{id}"
-			# html = ApplicationController.renderer.render(partial: 'dashboard/item', locals: { color: "#F33" })
+			color = random_pastel_color_in_hex
+			thread = self.new(id: id, state: IDLE, color: color)
+			thread.name = id
+			thread
+		end
 
-			html = ApplicationController.renderer.render(
-				partial: 'pc/item',
-				locals: { color: color }
-			)
+	end
 
-			t = self.new do
-				while redis.get(CHANNEL_STATE_KEY) == 'running' do
-					ActionCable.server.broadcast(CHANNEL, {
-						message: display_name,
-						id: id,
-						type: self.name,
-						count: count_current_threads,
-						html: html,
-					})
+	def action
+		raise NotImplementedError
+	end
 
-					sleep rand(0.2..2)
-				end
+	def initialize(*args, **kwargs)
+		kwargs.each { |attribute, value| self.__send__ "#{attribute}=", value }
+		super { run }
+		send_init_message
+	end
+
+	def run
+		while channel_state.in?([CHANNEL_STATE_RUNNING, CHANNEL_STATE_PAUSED]) do
+			if channel_paused?
+				state = IDLE
+				sleep 1 while channel_paused?
+			elsif channel_running? && state != RUNNING
+				state = RUNNING
 			end
-			t.name = id
 
-			t
-		end
-
-		private
-
-		def count_current_threads
-			Thread.list.count { |t| t.class.superclass.name =~ /#{self.superclass.name}/ }
-		end
-
-		def redis
-			@redis ||= Redis.new
+			next if channel_stopped?
+			
+			send_item_message(action)
+			sleep rand(0.2..2)
 		end
 	end
 
+	
+
+	private
+
+	def send_init_message
+		ActionCable.server.broadcast(CHANNEL, {
+			action: "#{self.class.name.downcase}_created",
+			count: current_thread_count,
+			html: thread_html,
+			id: id,
+			message: display_name,
+			type: self.class.name,
+		})
+	end
+
+	def send_item_message(action)
+		ActionCable.server.broadcast(CHANNEL, {
+			action: "item_#{action}",
+			count: current_thread_count,
+			html: item_html,
+			id: id,
+			message: display_name,
+			type: self.class.name,
+		})
+	end
+
+	def display_name
+		"#{self.class.name}:#{id}"
+	end
+
+	def item_html
+		@item_html ||= ApplicationController.renderer.render(
+			partial: 'pc/item',
+			locals: { color: color }
+		)
+	end
+
+	def thread_html
+		ApplicationController.renderer.render(
+			partial: "pc/#{self.class.name.downcase}",
+			locals: {
+				type: self.class.name,
+				id: id,
+				color: color,
+			}
+		)
+	end
 
 end

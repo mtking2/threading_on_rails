@@ -11,5 +11,6 @@ Rails.application.routes.draw do
 	post 'pc/add_producer', to: 'pc#add_producer'
 	post 'pc/add_consumer', to: 'pc#add_consumer'
 	post 'pc/start', to: 'pc#start'
+	post 'pc/pause', to: 'pc#pause'
 	post 'pc/stop', to: 'pc#stop'
 end

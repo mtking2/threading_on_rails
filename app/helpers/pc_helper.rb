@@ -1,4 +1,52 @@
 module PcHelper
+
+	CHANNEL = 'pc_channel'
+	CHANNEL_STATE_KEY = 'pc_channel_state'
+	CHANNEL_STATE_RUNNING = 'running'
+	CHANNEL_STATE_PAUSED = 'paused'
+	CHANNEL_STATE_STOPPED = 'stopped'
+
+	def channel_state
+		redis.get(CHANNEL_STATE_KEY)
+	end
+
+	def channel_paused?
+		channel_state == CHANNEL_STATE_PAUSED
+	end
+
+	def channel_running?
+		channel_state == CHANNEL_STATE_RUNNING
+	end
+
+	def channel_stopped?
+		channel_state == CHANNEL_STATE_STOPPED
+	end
+
+	def producer_threads
+		Thread.list.select { |t| t.class.name =~ /Producer/ }
+	end
+
+	def consumer_threads
+		Thread.list.select { |t| t.class.name =~ /Consumer/ }
+	end
+
+	def producer_count
+		producer_threads.length
+	end
+
+	def consumer_count
+		consumer_threads.length
+	end
+
+	def current_thread_count
+		producer_count + consumer_count
+	end
+
+	def redis
+		@redis ||= Redis.new
+	end
+
+
 	def hsv_to_rgb(h, s, v)
 		h_i = (h * 6).to_i
 		f = h * 6 - h_i

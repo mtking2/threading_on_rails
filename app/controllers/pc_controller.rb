@@ -2,11 +2,16 @@ class PcController < ApplicationController
 	include PcHelper
 
 	def index
-		redis.set(PcThread::CHANNEL_STATE_KEY, 'stopped')
+		redis.set(PcThread::CHANNEL_STATE_KEY, 'paused')
 	end
 
 	def start
 		redis.set(PcThread::CHANNEL_STATE_KEY, 'running')
+		head :ok
+	end
+
+	def pause
+		redis.set(PcThread::CHANNEL_STATE_KEY, 'paused')
 		head :ok
 	end
 
@@ -16,18 +21,11 @@ class PcController < ApplicationController
 	end
 
 	def add_producer
-		color = random_pastel_color_in_hex
+		# color = random_pastel_color_in_hex
 		# color = random_bright_color_in_hex
 
-		thread = Producer.spawn(color: color)
-		respond_to do |format|
-			format.js {
-				render json: {
-					message: 'producer_created',
-					html: render_to_string(partial: 'pc/producer', locals: { type: thread.class.name, id: thread.name, color: color }),
-				}
-			}
-		end
+		Producer.spawn
+		head :ok
 	end
 
 	def add_consumer
