@@ -1,5 +1,5 @@
 class Consumer < PcThread
 	def action
-		'consumed'
+		CONSUMED
 	end
 end

@@ -30,6 +30,8 @@
 			.align-self-end.text-center.mb-2= button_to "Add Producer", pc_add_producer_path, remote: true, class: "btn btn-lg btn-light"
 		.col-md-6
 			#resources.d-flex.flex-wrap
+				- @resources.each do |resource|
+					= render partial: "pc/item", locals: { id: resource.id, thread_id: resource.thread_id, color: resource.color }
 		.col-md-3.d-grid.justify-content-center.border-start.border-5.border-opacity-25
 			#consumers
 				- consumer_threads.each do |thread|

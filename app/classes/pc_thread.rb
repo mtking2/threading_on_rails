@@ -3,6 +3,8 @@ class PcThread < Thread
 	
 	IDLE = 'idle'
 	RUNNING = 'running'
+	PRODUCED = 'produced'
+	CONSUMED = 'consumed'
 
 	attr_accessor :id, :state, :color, :destroy_resources
 
@@ -40,7 +42,7 @@ class PcThread < Thread
 
 			next if channel_stopped?
 			
-			send_item_message(action)
+			process_item(action)
 			sleep rand(0.2..2)
 		end
 	end
@@ -52,27 +54,47 @@ class PcThread < Thread
 
 	private
 
+	def process_item(action)
+		processed_item = case action
+			when PRODUCED
+				item_id = SecureRandom.uuid
+				item_data = {
+					id: item_id,
+					thread_id: id,
+					color: color,
+				}
+				redis.rpush(PcHelper::CHANNEL_QUEUE_KEY, item_data.to_json)
+				item_data
+			when CONSUMED
+				JSON.parse(redis.lpop(PcHelper::CHANNEL_QUEUE_KEY) || '{}')
+		end
+		send_item_message(action, processed_item)
+	end
+
 	def send_init_message
 		ActionCable.server.broadcast(CHANNEL, {
 			action: "#{self.class.name.downcase}_created",
 			count: current_thread_count,
 			html: thread_html,
-			id: id,
+			thread_id: id,
 			message: display_name,
 			type: self.class.name,
 		})
 	end
 
-	def send_item_message(action)
-		ActionCable.server.broadcast(CHANNEL, {
+	def send_item_message(action, item)
+		data = {
 			action: "item_#{action}",
 			color: color,
 			count: current_thread_count,
-			html: item_html,
-			id: id,
+			item: item,
+			thread_id: id,
 			message: display_name,
 			type: self.class.name,
-		})
+		}
+		data.merge!(html: item_html(item)) if action == PRODUCED
+
+		ActionCable.server.broadcast(CHANNEL, data)
 	end
 
 	def send_kill_message
@@ -80,7 +102,7 @@ class PcThread < Thread
 		ActionCable.server.broadcast(CHANNEL, {
 			action: "#{self.class.name.downcase}_destroyed",
 			count: current_thread_count,
-			id: id,
+			thread_id: id,
 			message: display_name,
 			type: self.class.name,
 			destroy_resources: destroy_resources,
@@ -91,10 +113,10 @@ class PcThread < Thread
 		"#{self.class.name}:#{id}"
 	end
 
-	def item_html
-		@item_html ||= ApplicationController.renderer.render(
+	def item_html(item)
+		ApplicationController.renderer.render(
 			partial: 'pc/item',
-			locals: { id: id, color: color }
+			locals: { id: item[:id], thread_id: id, color: color }
 		)
 	end
 

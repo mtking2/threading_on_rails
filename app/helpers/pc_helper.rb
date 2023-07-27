@@ -2,6 +2,7 @@ module PcHelper
 
 	CHANNEL = 'pc_channel'
 	CHANNEL_STATE_KEY = 'pc_channel_state'
+	CHANNEL_QUEUE_KEY = 'pc_channel_queue'
 	CHANNEL_STATE_RUNNING = 'running'
 	CHANNEL_STATE_PAUSED = 'paused'
 	CHANNEL_STATE_STOPPED = 'stopped'

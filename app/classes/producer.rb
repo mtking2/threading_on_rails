@@ -1,5 +1,5 @@
 class Producer < PcThread
 	def action
-		'produced'
+		PRODUCED
 	end
 end

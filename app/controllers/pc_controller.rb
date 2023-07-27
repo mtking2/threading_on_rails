@@ -3,6 +3,7 @@ class PcController < ApplicationController
 
 	def index
 		redis.set(PcThread::CHANNEL_STATE_KEY, CHANNEL_STATE_PAUSED) if channel_state.blank?
+		@resources = redis.lrange(PcHelper::CHANNEL_QUEUE_KEY, 0, -1).map { |i| JSON.parse(i, object_class: OpenStruct) }
 	end
 
 	def start
@@ -27,6 +28,7 @@ class PcController < ApplicationController
 			thread.kill
 		end
 		redis.set(PcThread::CHANNEL_STATE_KEY, CHANNEL_STATE_PAUSED)
+		redis.del(PcThread::CHANNEL_QUEUE_KEY)
 		ActionCable.server.broadcast(CHANNEL, { action: 'status_changed', state: CHANNEL_STATE_PAUSED, count: current_thread_count})
 		ActionCable.server.broadcast(CHANNEL, { action: 'destroy_resources' })
 		head :ok

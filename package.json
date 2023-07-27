@@ -1,5 +1,5 @@
 {
-  "name": "producer_consumer",
+  "name": "threading_demo",
   "private": true,
   "dependencies": {}
 }
