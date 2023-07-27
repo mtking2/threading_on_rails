@@ -83,6 +83,8 @@ class PcThread < Thread
 	end
 
 	def send_item_message(action, item)
+		return if item.blank?
+
 		data = {
 			action: "item_#{action}",
 			color: color,
@@ -94,6 +96,7 @@ class PcThread < Thread
 		}
 		data.merge!(html: item_html(item)) if action == PRODUCED
 
+		sleep 0.25 if action == CONSUMED # delay consumed message to give time for produced messages to send
 		ActionCable.server.broadcast(CHANNEL, data)
 	end
 
