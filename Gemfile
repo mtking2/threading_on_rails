@@ -38,7 +38,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'haml'
 gem 'sidekiq', '< 6'
-gem 'redis'
+gem 'redis', '< 4.6'
 gem 'bootstrap', '~> 5.3.0.alpha3'
 gem 'jquery-rails'
 
