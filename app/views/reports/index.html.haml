@@ -6,10 +6,10 @@
 		= form_tag reports_csv_report_path, method: :post, remote: true, class: 'row g-3' do
 			.col-md-4
 				= label_tag :report_name, 'Report'
-				= select_tag :report_name, options_for_select(@reports), prompt: 'Select a report', class: 'form-select'
+				= select_tag :report_name, options_for_select(@reports, @reports.first), prompt: 'Select a report', class: 'form-select'
 			.col-md-2
 				= label_tag :num_rows, 'Number of rows'
-				= select_tag :num_rows, options_for_select([100, 1000, 10_000, 100_000], 1000), class: 'form-select'
+				= select_tag :num_rows, options_for_select([100, 1000, 10_000, 100_000], 100), class: 'form-select'
 			.col-md-2
 				= label_tag :num_columns, 'Number of columns'
 				= number_field_tag :num_columns, 5, in: 1..100, class: 'form-control'
@@ -18,3 +18,5 @@
 				= select_tag :num_threads, options_for_select([1, 2, 5, 10], 1), class: 'form-select'
 			.col-12.text-end
 				= submit_tag 'Generate', class: 'btn btn-primary'
+	.mx-5.my-5
+		= render partial: 'reports/table'

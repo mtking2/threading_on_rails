@@ -13,7 +13,7 @@
 		<%= javascript_include_tag 'https://kit.fontawesome.com/7b8d51796d.js', crossorigin: 'anonymous' %>
 	</head>
 
-	<body>
+	<body data-channel="<%= controller_name %>">
 		<%= render 'shared/navbar' %>
 		<%= yield %>
 	</body>
