@@ -18,5 +18,6 @@
 				= select_tag :num_threads, options_for_select([1, 2, 5, 10], 1), class: 'form-select'
 			.col-12.text-end
 				= submit_tag 'Generate', class: 'btn btn-primary'
+			= hidden_field_tag :uuid, SecureRandom.uuid
 	.mx-5.my-5
 		= render partial: 'reports/table'
