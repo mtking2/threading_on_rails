@@ -1,4 +1,4 @@
 .my-2{'data-thread-id': thread_id, width: "100%"}
 	.progress{ role: 'progressbar', 'aria-label': 'Animated striped example', 'aria-valuenow': "#{percent_complete}", 'aria-valuemin': '0', 'aria-valuemax': '100', style: "height: 20px" }
 		.progress-bar.overflow-visible.text-start{ style: "width: #{percent_complete}%" }
-			.label.ms-2= "T#{thread_id} - #{rows_generated}/#{slice_length} - #{percent_complete.round}%"
+			.label.ms-2{style: "text-shadow: 1px 1px 2px black"}= "T#{thread_id} - #{rows_generated}/#{slice_length} - #{percent_complete.round}%"

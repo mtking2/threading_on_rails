@@ -34,7 +34,7 @@ class ReportingMethods
 								send_thread_status_message(
 									thread_id: t_idx,
 									params: t_params,
-									rows_generated: row_idx + 1,
+									rows_generated: row_idx,
 									slice_length: t_slice.length,
 								)
 							end
