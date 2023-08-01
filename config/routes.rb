@@ -17,4 +17,5 @@ Rails.application.routes.draw do
 
 	get 'reports/', to: 'reports#index'
 	post 'reports/csv_report', to: 'reports#csv_report'
+	post 'reports/purge_past_reports', to: 'reports#purge_past_reports'
 end

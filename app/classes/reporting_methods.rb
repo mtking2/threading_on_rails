@@ -17,7 +17,7 @@ class ReportingMethods
 			slice_length = (num_rows / num_threads).ceil
 
 			mod = num_rows / 100.0
-			mod /= 5 if num_rows > 10_000
+			mod /= 10 if num_rows > 10_000
 
 			semaphore = Mutex.new
 			
@@ -30,7 +30,7 @@ class ReportingMethods
 						
 						semaphore.synchronize {
 							rows << row
-							if row_idx % mod == 0
+							if row_idx % mod == 0 || row_idx == t_slice.length - 1
 								send_thread_status_message(
 									thread_id: t_idx,
 									params: t_params,
@@ -69,6 +69,7 @@ class ReportingMethods
 		private
 
 		def send_thread_status_message(thread_id:, params: {}, rows_generated: 0, slice_length: 0)
+			percent_complete = (rows_generated.to_f / slice_length.to_f) * 100.0
 			html = ActionController::Base.new.render_to_string(
 				partial: 'reports/thread_progress_row',
 				locals: {
@@ -76,12 +77,13 @@ class ReportingMethods
 					rows_generated: rows_generated,
 					slice_length: slice_length,
 					colspan: (1 / params[:num_threads].to_f) * 100,
+					percent_complete: percent_complete.round,
 				}
 			)
 			
 			ActionCable.server.broadcast(ReportingMethods::CHANNEL, {
 				action: 'report_processing',
-				meta: params.merge(rows_generated: rows_generated, slice_length: slice_length),
+				meta: params.merge(rows_generated: rows_generated, slice_length: slice_length, percent_complete: percent_complete.round),
 				html: html,
 				thread_id: thread_id,
 			})

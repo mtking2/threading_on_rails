@@ -7,11 +7,11 @@
 	#channel-state= channel_state
 
 .my-2.d-flex.justify-content-center
-	= button_to pc_start_path, remote: true, class: "btn btn-lg btn-light mx-1" do
+	= button_to pc_start_path, remote: true, class: "btn btn-lg btn-outline-secondary mx-1" do
 		%i.fa-solid.fa-play
-	= button_to pc_pause_path, remote: true, class: "btn btn-lg btn-light mx-1" do
+	= button_to pc_pause_path, remote: true, class: "btn btn-lg btn-outline-secondary mx-1" do
 		%i.fa-solid.fa-pause
-	= button_to pc_stop_path, remote: true, class: "btn btn-lg btn-light mx-1" do
+	= button_to pc_stop_path, remote: true, class: "btn btn-lg btn-outline-secondary mx-1" do
 		%i.fa-solid.fa-stop
 
 .container.text-center.border.border-5.rounded.border-opacity-25
@@ -27,7 +27,7 @@
 			#producers
 				- producer_threads.each do |thread|
 					= render partial: "pc/producer", locals: { id: thread.id, type: thread.class.name, color: thread.color }
-			.align-self-end.text-center.mb-2= button_to "Add Producer", pc_add_producer_path, remote: true, class: "btn btn-lg btn-light"
+			.align-self-end.text-center.mb-2= button_to "Add Producer", pc_add_producer_path, remote: true, class: "btn btn-lg btn-outline-secondary"
 		.col-md-6
 			#resources.d-flex.flex-wrap
 				- @resources.each do |resource|
@@ -36,4 +36,4 @@
 			#consumers
 				- consumer_threads.each do |thread|
 					= render partial: "pc/consumer", locals: { id: thread.id, type: thread.class.name, color: thread.color }
-			.align-self-end.text-center.mb-2= button_to "Add Consumer", pc_add_consumer_path, remote: true, class: "btn btn-lg btn-light"
+			.align-self-end.text-center.mb-2= button_to "Add Consumer", pc_add_consumer_path, remote: true, class: "btn btn-lg btn-outline-secondary"

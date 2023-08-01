@@ -16,8 +16,11 @@
 			.col-md-4
 				= label_tag :num_threads, 'Number of threads'
 				= select_tag :num_threads, options_for_select([1, 2, 5, 10], 1), class: 'form-select'
-			.col-12.text-end
-				= submit_tag 'Generate', class: 'btn btn-primary'
+			.col-12
+				.float-start
+					= link_to 'Purge Old Reports', reports_purge_past_reports_path, method: :post, class: 'btn btn-sm btn-outline-warning', type: 'button'
+					Old reports: #{@past_reports_count}
+				= submit_tag 'Generate', class: 'btn btn-outline-primary float-end'
 			= hidden_field_tag :report_uuid, ''
 			= hidden_field_tag :authenticity_token, form_authenticity_token
 
