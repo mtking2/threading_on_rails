@@ -12,12 +12,20 @@ App.channels.reports.subscribe = ->
 
 		received: (data) ->
 			# Called when there's incoming data on the websocket for this channel
-			console.log(data)
+			
 
 			switch data.action
 				when "report_generated"
-					$("#report-rows").prepend(data.html)
+					console.log(data)
+					$("##{data.meta.report_uuid}").replaceWith(data.html)
 					if $("#report-table").is(":hidden")
 						$("#report-table").show()
+				when "report_processing"
+					thread_progress = $("[data-thread-id='#{data.thread_id}'")
+
+					if not thread_progress.length
+						$("##{data.meta.report_uuid} td").append(data.html)
+					else
+						thread_progress.replaceWith(data.html)
 				else
 					break

@@ -15,6 +15,6 @@ class ReportsController < ApplicationController
 	private
 
 	def report_params
-		params.permit(:report_name, :num_rows, :num_columns, :num_threads)
+		params.permit(:report_name, :num_rows, :num_columns, :num_threads, :report_uuid)
 	end
 end

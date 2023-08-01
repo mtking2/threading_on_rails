@@ -15,14 +15,30 @@ class ReportingMethods
 			threads = []
 
 			slice_length = (num_rows / num_threads).ceil
+
+			mod = num_rows / 100.0
+			mod /= 5 if num_rows > 10_000
+
+			semaphore = Mutex.new
 			
 			(1..num_rows).each_slice(slice_length).with_index do |slice, i|
-				threads << Thread.new(i + 1, slice) do |t_idx, t_slice|
-					t_slice.each do |row_num|
+				threads << Thread.new(i + 1, slice, params,) do |t_idx, t_slice, t_params|
+					t_slice.each_with_index do |row_num, row_idx|
 						row = [row_num]
 						row.concat Array.new(num_cols) { sleep rand(0..0.0001); rand }
 						sleep rand(0..0.0001) # simulate processing time
-						rows << row
+						
+						semaphore.synchronize {
+							rows << row
+							if row_idx % mod == 0
+								send_thread_status_message(
+									thread_id: t_idx,
+									params: t_params,
+									rows_generated: row_idx + 1,
+									slice_length: t_slice.length,
+								)
+							end
+						}
 					end
 				end
 			end
@@ -49,6 +65,26 @@ class ReportingMethods
 
 			Rails.application.routes.url_helpers.rails_blob_url(blob)
 		end
+		
+		private
 
+		def send_thread_status_message(thread_id:, params: {}, rows_generated: 0, slice_length: 0)
+			html = ActionController::Base.new.render_to_string(
+				partial: 'reports/thread_progress_row',
+				locals: {
+					thread_id: thread_id,
+					rows_generated: rows_generated,
+					slice_length: slice_length,
+					colspan: (1 / params[:num_threads].to_f) * 100,
+				}
+			)
+			
+			ActionCable.server.broadcast(ReportingMethods::CHANNEL, {
+				action: 'report_processing',
+				meta: params.merge(rows_generated: rows_generated, slice_length: slice_length),
+				html: html,
+				thread_id: thread_id,
+			})
+		end
 	end
 end
