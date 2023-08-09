@@ -19,7 +19,9 @@ App.channels.reports.subscribe = ->
 				when "report_generated"
 					console.log(data)
 
-					$("##{data.meta.report_uuid}").replaceWith(data.html)
+					setTimeout (->
+						$("##{data.meta.report_uuid}").replaceWith(data.html)
+					), 1000
 					
 					if $("#report-table").is(":hidden")
 						$("#report-table").show()
@@ -34,6 +36,5 @@ App.channels.reports.subscribe = ->
 						thread_progress.find(".progress").attr("aria-valuenow", data.meta.percent_complete)
 						thread_progress.find(".progress-bar").css("width", "#{data.meta.percent_complete}%")
 						thread_progress.find(".label").text("T#{data.thread_id} - #{data.meta.rows_generated}/#{data.meta.slice_length} - #{data.meta.percent_complete}%")
-
 				else
 					break
