@@ -1,4 +1,4 @@
-.container.px-1
+.container.px-1{ style: 'min-width: 1000px' }
 	.text-center
 		.h1.display-4 Economy Simulator 9000
 		%table.table.table-sm.table-bordered.table-striped
@@ -17,7 +17,7 @@
 					%td#current-threads= @num_current_threads
 					%td= ENV['RAILS_MAX_THREADS']
 
-.my-2.d-flex.justify-content-center
+.my-2.d-flex.justify-content-center{ style: 'min-width: 1000px' }
 	= link_to pc_start_path, method: :post, remote: true, class: "btn btn-lg btn-outline-secondary mx-1" do
 		%i.fa-solid.fa-play
 	= link_to pc_pause_path, method: :post, remote: true, class: "btn btn-lg btn-outline-secondary mx-1" do
@@ -25,25 +25,25 @@
 	= link_to pc_stop_path, method: :post, remote: true, class: "btn btn-lg btn-outline-secondary mx-1" do
 		%i.fa-solid.fa-stop
 
-.container.text-center.border.border-5.rounded.border-opacity-25
+.container.text-center.border.border-5.rounded.border-opacity-25{ style: 'min-width: 1000px' }
 	.row.header
-		.col-md-3.border-end.border-5.border-opacity-25
+		.col-3.border-end.border-5.border-opacity-25
 			.h2 Producers
-		.col-md-6
+		.col-6
 			.h2 Resources
-		.col-md-3.border-start.border-5.border-opacity-25
+		.col-3.border-start.border-5.border-opacity-25
 			.h2 Consumers
 	.row.container-body
-		.col-md-3.d-grid.justify-content-center.border-end.border-5.border-opacity-25
+		.col-3.d-grid.justify-content-center.border-end.border-5.border-opacity-25
 			#producers
 				- producer_threads.each do |thread|
 					= render partial: "pc/producer", locals: { id: thread.id, type: thread.class.name, color: thread.color }
 			.align-self-end.text-center.mb-2= link_to "Add Producer", pc_add_producer_path, method: :post, remote: true, class: "btn btn-lg btn-outline-secondary"
-		.col-md-6
+		.col-6
 			#resources.d-flex.flex-wrap
 				- @resources.each do |resource|
 					= render partial: "pc/item", locals: { id: resource.id, thread_id: resource.thread_id, color: resource.color }
-		.col-md-3.d-grid.justify-content-center.border-start.border-5.border-opacity-25
+		.col-3.d-grid.justify-content-center.border-start.border-5.border-opacity-25
 			#consumers
 				- consumer_threads.each do |thread|
 					= render partial: "pc/consumer", locals: { id: thread.id, type: thread.class.name, color: thread.color }
