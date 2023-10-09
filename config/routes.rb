@@ -20,4 +20,7 @@ Rails.application.routes.draw do
 	post 'reports/purge_past_reports', to: 'reports#purge_past_reports'
 
 	get 'dining_philosophers/', to: 'dining_philosophers#index'
+	post 'dining_philosophers/start', to: 'dining_philosophers#start'
+	post 'dining_philosophers/pause', to: 'dining_philosophers#pause'
+	post 'dining_philosophers/stop', to: 'dining_philosophers#stop'
 end
