@@ -12,12 +12,9 @@
 					%a.nav-link.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :href => "#", :role => "button"}
 						Demos
 					%ul.dropdown-menu
-						%li
-							%a.dropdown-item{:href => "/pc"} Economy Simulator
-						%li
-							%a.dropdown-item{:href => "/reports"} Report Generator
-						%li
-							%a.dropdown-item{:href => "/dining_philosophers"} Dining Philosophers
+						- @demos.each do |demo|
+							%li
+								%a.dropdown-item{:href => demo.path}= demo.title
 			%ul.navbar-nav.flex-row.flex-wrap.ms-md-auto
 				%li.nav-item.dropdown
 					%button#bd-theme.btn.btn-link.nav-link.dropdown-toggle.d-flex.align-items-center{"aria-expanded" => "false", "aria-label" => "Toggle theme (dark)", "data-bs-display" => "static", "data-bs-toggle" => "dropdown", :type => "button"}
