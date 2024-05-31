@@ -28,7 +28,7 @@ class Philosopher < Thread
 		ponder
 	end
 
-	def ponder min=4, max=8
+	def ponder min=1, max=3
 		return if @finished
 		sleep rand min..max
 		sleep 1 while channel_paused?
